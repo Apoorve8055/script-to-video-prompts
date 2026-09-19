@@ -1,12 +1,23 @@
 # Script to Video Prompts
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
-![Claude Skill](https://img.shields.io/badge/Claude-Skill-orange.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-green.svg)
+[![Agent Skills](https://img.shields.io/badge/Agent_Skills-compatible-orange.svg)](https://agentskills.io)
 
-A [Claude Skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) that turns a script or story into a **paste-ready prompt pack** for AI video generators: one prompt per 10-second clip, with timed shots, `@` reference tags that keep characters and locations consistent, and a negative prompt for every clip.
+An [Agent Skill](https://agentskills.io) that turns a script or story into a **paste-ready prompt pack** for AI video generators: one prompt per 10-second clip, with timed shots, `@` reference tags that keep characters and locations consistent, and a negative prompt for every clip.
 
-Works with **Seedance, Kling, Veo, Runway, Sora, Hailuo** and similar apps.
+Writes prompts for **Seedance, Kling, Veo, Runway, Sora, Hailuo** and similar video apps.
+
+Runs in any AI coding agent that supports the open [Agent Skills](https://agentskills.io/specification) standard:
+
+| Agent | Supported |
+|---|---|
+| Claude Code, Claude.ai, Claude Desktop | ✅ |
+| OpenAI Codex | ✅ |
+| Gemini CLI | ✅ |
+| OpenCode | ✅ |
+| Qwen Code | ✅ |
+| Cursor, GitHub Copilot and [other compatible agents](https://skills.sh) | ✅ via `npx skills` |
 
 ---
 
@@ -24,31 +35,73 @@ Works with **Seedance, Kling, Veo, Runway, Sora, Hailuo** and similar apps.
 
 ## Installation
 
-### Option 1: Claude Code (recommended)
+### Option 1: `npx skills` (any agent)
 
-Install as a **personal skill**, available in every project:
+The [skills CLI](https://github.com/vercel-labs/skills) detects the agents you have installed and sets the skill up for each one. It needs Node.js.
+
+```bash
+npx skills add Apoorve8055/script-to-video-prompts -g
+```
+
+Pick specific agents with `-a`:
+
+```bash
+npx skills add Apoorve8055/script-to-video-prompts -g -a claude-code -a codex -a gemini-cli -a opencode -a qwen-code
+```
+
+Leave out `-g` to install into the current project instead of globally.
+
+### Option 2: Install script (no Node.js needed)
+
+Installs the skill for Claude Code, Codex, Gemini CLI, OpenCode and Qwen Code in one step. Needs `git`.
 
 **macOS / Linux / WSL**
 
 ```bash
-git clone https://github.com/Apoorve8055/script-to-video-prompts.git ~/.claude/skills/script-to-video-prompts
+curl -fsSL https://raw.githubusercontent.com/Apoorve8055/script-to-video-prompts/main/install.sh | bash
 ```
 
 **Windows (PowerShell)**
 
 ```powershell
-git clone https://github.com/Apoorve8055/script-to-video-prompts.git "$env:USERPROFILE\.claude\skills\script-to-video-prompts"
+irm https://raw.githubusercontent.com/Apoorve8055/script-to-video-prompts/main/install.ps1 | iex
 ```
 
-Or install as a **project skill**, shared with everyone who works on a repository. Run this from the project root and commit the folder:
+To choose tools or install into the current project, clone the repo and run the script with options:
 
 ```bash
-git clone https://github.com/Apoorve8055/script-to-video-prompts.git .claude/skills/script-to-video-prompts
+./install.sh claude qwen          # only Claude Code and Qwen Code
+./install.sh --project            # into the current project
 ```
 
-Restart Claude Code. The skill loads automatically when you ask for video prompts.
+```powershell
+.\install.ps1 -Tools claude,qwen
+.\install.ps1 -Project
+```
 
-### Option 2: Claude.ai and Claude Desktop
+Tool names: `claude`, `codex`, `gemini`, `opencode`, `qwen`.
+
+### Option 3: Manual
+
+Clone the repo into the skills folder of your agent:
+
+| Agent | Personal (all projects) | Project |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| Codex | `~/.agents/skills/` or `~/.codex/skills/` | `.agents/skills/` |
+| Gemini CLI | `~/.agents/skills/` or `~/.gemini/skills/` | `.agents/skills/` |
+| OpenCode | `~/.agents/skills/`, `~/.claude/skills/` or `~/.config/opencode/skills/` | `.agents/skills/` |
+| Qwen Code | `~/.qwen/skills/` | `.qwen/skills/` |
+
+For example, `~/.agents/skills/` covers Codex, Gemini CLI and OpenCode at once:
+
+```bash
+git clone https://github.com/Apoorve8055/script-to-video-prompts.git ~/.agents/skills/script-to-video-prompts
+```
+
+On Windows, `~` is `$env:USERPROFILE`. The folder must be named `script-to-video-prompts`.
+
+### Option 4: Claude.ai and Claude Desktop
 
 1. On this page, click **Code → Download ZIP**.
 2. In Claude, open **Settings → Capabilities → Skills**.
@@ -57,19 +110,19 @@ Restart Claude Code. The skill loads automatically when you ask for video prompt
 
 > Custom skills on Claude.ai require a paid plan with code execution enabled.
 
+### After installing
+
+Restart your agent. The skill loads automatically when you ask for video prompts. You can also call it directly: `/skills` in Codex, Gemini CLI and Qwen Code lists it, and in Claude Code and Qwen Code you can type `/script-to-video-prompts`.
+
 ### Updating
 
-```bash
-git -C ~/.claude/skills/script-to-video-prompts pull
-```
-
-On Windows, use `"$env:USERPROFILE\.claude\skills\script-to-video-prompts"` as the path. On Claude.ai, download the latest ZIP and upload it again.
+Run the same install command again. With `npx skills`, `npx skills update` updates all installed skills. For a manual install, run `git pull` in the skill folder.
 
 ---
 
 ## Usage
 
-Give Claude your script and your reference tags, and ask for video prompts:
+Give your agent your script and your reference tags, and ask for video prompts:
 
 ```text
 Turn this script into Kling prompts, 9:16.
@@ -81,7 +134,7 @@ MAYA: You're late.
 LEO: I brought the letter.
 ```
 
-Claude asks **one** follow-up question if anything important is missing, such as tag mapping, reference type, aspect ratio or app limits. Otherwise it uses sensible defaults and marks each one as *(assumed)*.
+The agent asks **one** follow-up question if anything important is missing, such as tag mapping, reference type, aspect ratio or app limits. Otherwise it uses sensible defaults and marks each one as *(assumed)*.
 
 ### Output
 
@@ -127,6 +180,8 @@ script-to-video-prompts/
 │   ├── negative-library.md          # Negative prompts by category
 │   ├── platform-notes.md            # App-specific limits and adaptations
 │   └── reference-sheets.md          # Character and location sheet guidance
+├── install.sh                       # Installer for macOS / Linux / WSL
+├── install.ps1                      # Installer for Windows
 ├── LICENSE
 └── README.md
 ```

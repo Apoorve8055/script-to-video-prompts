@@ -2,10 +2,11 @@
 name: script-to-video-prompts
 description: Turn a script or story into paste-ready AI video prompts, split into 10-second clips (or the app's clip length) with timed shots, @ reference tags for character/location consistency, and per-clip negative prompts. Use when the user gives a script, story, episode or scene and wants video generation prompts (Seedance, Kling, Veo, Runway, Sora, Hailuo, etc.).
 license: MIT
+compatibility: Any Agent Skills-compatible agent (Claude Code, Codex, Gemini CLI, OpenCode, Qwen Code, Cursor, GitHub Copilot). Needs file write access to save the prompt pack.
 metadata:
   author: Apoorve Verma
   url: http://apoorveverma.com
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Script → 10-second video prompts
