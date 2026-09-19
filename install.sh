@@ -46,6 +46,9 @@ for tool in $(printf '%s\n' "${tools[@]}" | sort -u); do
   if [ "$(cd "$src" && pwd)" = "$(mkdir -p "$dest" && cd "$dest" && pwd)" ]; then
     installed+=("$dest (already here)"); continue
   fi
+  if [ -d "$dest/.git" ]; then
+    installed+=("$dest (skipped: git checkout, run 'git pull' there)"); continue
+  fi
   rm -rf "$dest" && mkdir -p "$dest"
   cp -R "$src/SKILL.md" "$src/references" "$src/LICENSE" "$dest/"
   installed+=("$dest")

@@ -40,6 +40,9 @@ try {
         if ((Resolve-Path $src).Path.TrimEnd('\') -eq $dest.TrimEnd('\')) {
             $installed += "$dest (already here)"; continue
         }
+        if (Test-Path (Join-Path $dest '.git')) {
+            $installed += "$dest (skipped: git checkout, run 'git pull' there)"; continue
+        }
         if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
         New-Item -ItemType Directory -Force $dest | Out-Null
         Copy-Item (Join-Path $src 'SKILL.md'), (Join-Path $src 'LICENSE') $dest
